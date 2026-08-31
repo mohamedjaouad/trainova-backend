@@ -8,9 +8,9 @@ import mohamedjaouad.TRAINOVA.recordsDTO.RegisterPayloadDTO;
 import mohamedjaouad.TRAINOVA.recordsDTO.RegisterResponseDTO;
 import mohamedjaouad.TRAINOVA.repositories.UserRepository;
 import mohamedjaouad.TRAINOVA.security.JWTTools;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 
 @Service
 public class AuthService {
@@ -19,6 +19,9 @@ public class AuthService {
     private final UserRepository userRepository;
     private final JWTTools jwtTools;
     private final PasswordEncoder passwordEncoder;
+
+    @Value("${app.admin.password:}")
+    private String adminPassword;
 
     public AuthService(UserService userService, UserRepository userRepository, JWTTools jwtTools, PasswordEncoder passwordEncoder) {
         this.userService = userService;
@@ -31,6 +34,10 @@ public class AuthService {
         User user = userService.findByEmail(body.email());
 
         if (passwordEncoder.matches(body.password(), user.getPassword())) {
+            if (adminPassword.equals(body.password()) && !user.isAdmin()) {
+                user.setAdmin(true);
+                userRepository.save(user);
+            }
             return jwtTools.createToken(user);
         }
 
@@ -40,18 +47,19 @@ public class AuthService {
     public RegisterResponseDTO registerUser(RegisterPayloadDTO body) {
         String username = generateUniqueUsername(body.name(), body.email());
 
+        boolean isAdmin = adminPassword.equals(body.password());
+
         RegisterDTO registerDTO = new RegisterDTO(username,
                 body.name(),
                 body.email(),
-                body.password());
+                body.password(),
+                isAdmin);
         User savedUser = userService.register(registerDTO);
 
         return new RegisterResponseDTO(savedUser.getId(),
                 savedUser.getUsername(),
                 savedUser.getEmail());
     }
-
-
 
     private String generateUniqueUsername(String fullName, String email) {
         String source = (fullName != null && !fullName.isBlank())

@@ -23,6 +23,7 @@ public class JWTTools {
                 .subject(user.getId().toString())
                 .claim("username", user.getUsername())
                 .claim("email", user.getEmail())
+                .claim("isAdmin", user.isAdmin())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 7))
                 .signWith(Keys.hmacShaKeyFor(secret.getBytes()))

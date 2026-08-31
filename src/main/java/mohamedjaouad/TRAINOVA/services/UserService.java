@@ -21,7 +21,6 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-
     public UserService(UserRepository userRepository, @Lazy PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -37,6 +36,7 @@ public class UserService implements UserDetailsService {
 
         String hashedPassword = passwordEncoder.encode(body.password());
         User user = new User(body.username(), body.email(), hashedPassword, body.fullName());
+        user.setAdmin(body.isAdmin());
         return userRepository.save(user);
     }
 

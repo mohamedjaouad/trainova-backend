@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-
 public record RegisterDTO(
         @NotBlank(message = "L'username è obbligatorio")
         @Size(min = 3, max = 20, message = "L'username deve avere tra 3 e 20 caratteri")
@@ -26,6 +25,7 @@ public record RegisterDTO(
                 regexp = "^(?=.*[0-9])(?=.*[^a-zA-Z0-9\\s]).+$",
                 message = "La password deve contenere almeno un numero e un carattere speciale"
         )
-        String password
-) {
-}
+        String password,
+
+        boolean isAdmin
+) {}

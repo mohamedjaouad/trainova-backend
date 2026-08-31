@@ -1,5 +1,6 @@
 package mohamedjaouad.TRAINOVA.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -67,6 +68,9 @@ public class User implements UserDetails {
 
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
+    @JsonIgnore
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean isAdmin = false;
 
 
     public User(String username, String email, String password, String fullName) {
