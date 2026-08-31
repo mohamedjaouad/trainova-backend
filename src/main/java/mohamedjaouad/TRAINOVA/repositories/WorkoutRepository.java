@@ -1,5 +1,6 @@
 package mohamedjaouad.TRAINOVA.repositories;
 
+import mohamedjaouad.TRAINOVA.entities.Program;
 import mohamedjaouad.TRAINOVA.entities.WorkoutSession;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -18,4 +19,7 @@ public interface WorkoutRepository extends JpaRepository<WorkoutSession, UUID> {
 
 
     Optional<WorkoutSession> findByIdAndUserId(UUID id, UUID userId);
+
+
+    List<WorkoutSession> findByUserId(UUID userId);
 }
